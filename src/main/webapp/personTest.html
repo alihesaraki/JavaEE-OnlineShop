@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    <link rel="stylesheet" href="toast.css">
+
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Dropdown
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="#">اکشن</a>
+                    <a class="dropdown-item" href="#">Another action</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" href="#">Disabled</a>
+            </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+    </div>
+</nav>
+<table class="table table-light table-hover">
+    <thead>
+    <tr>
+<!--        <th>id</th>-->
+        <th>name</th>
+        <th>family</th>
+        <th>birthDate</th>
+        <th>nationalId</th>
+        <th>phoneNumber</th>
+        <th>address</th>
+        <th>postalCode</th>
+
+    </tr>
+    </thead>
+<!--    <tbody>-->
+<!--    <tr>-->
+<!--        <td>1</td>-->
+<!--        <td>mobina</td>-->
+<!--        <td>azimi</td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <td>2</td>-->
+<!--        <td>reza</td>-->
+<!--        <td>rezaei</td>-->
+<!--    </tr>-->
+<!--    </tbody>-->
+    <tfoot></tfoot>
+
+</table>
+<form id="person-form" action="/api/persons">
+    <input type="text" name="name">
+    <input type="text" name="family">
+<!--    <input type="hidden" name="token" value="123abc">-->
+    <!--        <input type="text" name="nationalId">-->
+    <input type="date" name="birthDate">
+    <input type="hidden" name="nationalId" value="123abc">
+    <input type="text" name="phoneNumber">
+    <input type="text" name="address">
+    <input type="text" name="postalCode">
+    <input type="checkbox" name="male">
+    <input type="checkbox" name="female">
+
+
+    <button>Save</button>
+</form>
+<button onclick=testIt()>Test</button>
+
+<div id="toast-container"></div>
+
+<script>
+    document.getElementById("person-form").addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        var form = event.target;
+        var url = form.action;
+        var formData = new FormData(event.target);
+        var jsonObject = {};
+        formData.forEach((value, key) => {
+            jsonObject[key] = value;
+        });
+        var jsonString = JSON.stringify(jsonObject);
+        options.headers = {'Content-Type': 'application/json'}
+        options.body = jsonString;
+
+        const response = await fetch(url, options);
+        const data = await response.json();
+
+        if (response.status === 200 || response.status === 201) {
+            showToast("info", JSON.stringify(data));
+        } else {
+            showToast("error", JSON.stringify(data));
+        }
+    })
+
+    async function testIt() {
+        const response = await fetch(
+            "http://localhost/api/persons",
+            "http://localhost/person",
+            {
+                method: "GET"
+            }
+        );
+
+        if (response.status === 200 || response.status === 201) {
+            const data = await response.json();
+            showToast("info", data);
+        } else if (response.status === 204) {
+            showToast("warning", "No Content !!!");
+        } else {
+            showToast("error", data);
+        }
+    }
+</script>
+
+<script src="toast.js"></script>
+</body>
+</html>

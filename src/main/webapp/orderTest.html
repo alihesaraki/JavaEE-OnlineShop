@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Test</title>
+
+    <link rel="stylesheet" href="toast.css">
+
+</head>
+<body>
+<form id="order-form" action="/api/orders">
+    <input type="text" name="username">
+    <input type="datetime-local" name="orderDate">
+    <input type="checkbox" name="PENDING">
+    <input type="checkbox" name="PROCESSING">
+    <input type="checkbox" name="SHIPPED">
+    <input type="checkbox" name="DELIVERED">
+    <input type="checkbox" name="CANCELED">
+    <input type="checkbox" name="RETURNED">
+
+    <input type="number" name="totalAmount">
+    <input type="number" name="discount">
+    <input type="number" name="tax">
+    <input type="number" name="shippingCost">
+    <input type="text" name="product">
+    <input type="text" name="billingAddress">
+    <button>Save</button>
+</form>
+<button onclick=testIt()>Test</button>
+
+<div id="toast-container"></div>
+
+<script>
+    document.getElementById("order-form").addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        var form = event.target;
+        var url = form.action;
+        var formData = new FormData(event.target);
+        var jsonObject = {};
+        formData.forEach((value, key) => {
+            jsonObject[key] = value;
+        });
+        var jsonString = JSON.stringify(jsonObject);
+        options.headers = {'Content-Type': 'application/json'}
+        options.body = jsonString;
+
+        const response = await fetch(url, options);
+        const data = await response.json();
+
+        if (response.status === 200 || response.status === 201) {
+            showToast("info", JSON.stringify(data));
+        } else {
+            showToast("error", JSON.stringify(data));
+        }
+    })
+
+    async function testIt() {
+        const response = await fetch(
+            "http://localhost/api/orders",
+            {
+                method: "GET"
+            }
+        );
+
+        if (response.status === 200 || response.status === 201) {
+            const data = await response.json();
+            showToast("info", data);
+        } else if (response.status === 204) {
+            showToast("warning", "No Content !!!");
+        } else {
+            showToast("error", data);
+        }
+    }
+</script>
+
+<script src="toast.js"></script>
+</body>
+</html>

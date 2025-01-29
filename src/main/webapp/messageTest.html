@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Test</title>
+
+    <link rel="stylesheet" href="toast.css">
+
+</head>
+<body>
+<form id="message-form" action="/api/messages">
+    <input type="text" name="text">
+    <input type="text" name="title">
+    <input type="datetime-local" name="dateTime">
+    <button>Save</button>
+</form>
+<button onclick=testIt()>Test</button>
+
+<div id="toast-container"></div>
+
+<script>
+    document.getElementById("message-form").addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        var form = event.target;
+        var url = form.action;
+        var formData = new FormData(event.target);
+        var jsonObject = {};
+        formData.forEach((value, key) => {
+            jsonObject[key] = value;
+        });
+        var jsonString = JSON.stringify(jsonObject);
+        options.headers = {'Content-Type': 'application/json'}
+        options.body = jsonString;
+
+        const response = await fetch(url, options);
+        const data = await response.json();
+
+        if (response.status === 200 || response.status === 201) {
+            showToast("info", JSON.stringify(data));
+        } else {
+            showToast("error", JSON.stringify(data));
+        }
+    })
+
+    async function testIt() {
+        const response = await fetch(
+            "http://localhost/api/messages",
+            {
+                method: "GET"
+            }
+        );
+
+        if (response.status === 200 || response.status === 201) {
+            const data = await response.json();
+            showToast("info", data);
+        } else if (response.status === 204) {
+            showToast("warning", "No Content !!!");
+        } else {
+            showToast("error", data);
+        }
+    }
+</script>
+
+<script src="toast.js"></script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+Mobina:person - role - User
+Hoda:Product - ProductGroup
+Zahrs:Inventory - InventoryTransaction
+Ali:FinantionalTransAction - FinantioalDoc _ Bank
+Mahdi:Order _ OrderItem _ Delivery
